@@ -1,0 +1,159 @@
+name: Autograding Tests
+
+on:
+  - push
+  - workflow_dispatch
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+
+      # Q1
+      - name: Q1
+        id: q1
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q1
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('X') || !isTRUE(all.equal(X, log(10)))) quit(status=1)"
+          max-score: 1
+
+      # Q2
+      - name: Q2
+        id: q2
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q2
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('cio') || !isTRUE(all.equal(cio, 888^35))) quit(status=1)"
+          max-score: 1
+
+      # Q3
+      - name: Q3
+        id: q3
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q3
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('x') || !isTRUE(all.equal(x, c(1,2,3,4,5)))) quit(status=1)"
+          max-score: 1
+
+      # Q4
+      - name: Q4
+        id: q4
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q4
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('name') || !isTRUE(all.equal(name, c('A','B','C')))) quit(status=1)"
+          max-score: 1
+
+      # Q5
+      - name: Q5
+        id: q5
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q5
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('d') || !is.character(d)) quit(status=1)"
+          max-score: 1
+
+      # Q6
+      - name: Q6
+        id: q6
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q6
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('o') || !isTRUE(all.equal(o, 3))) quit(status=1)"
+          max-score: 1
+
+      # Q7
+      - name: Q7
+        id: q7
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q7
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('y') || !isTRUE(all.equal(y, c(2,4,6,8,10)))) quit(status=1)"
+          max-score: 1
+
+      # Q8
+      - name: Q8
+        id: q8
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q8
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('z') || !isTRUE(all.equal(z, c(4,5)))) quit(status=1)"
+          max-score: 1
+
+      # Q9
+      - name: Q9
+        id: q9
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q9
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('A') || !is.matrix(A) || nrow(A)!=2) quit(status=1)"
+          max-score: 1
+
+      # Q10
+      - name: Q10
+        id: q10
+        continue-on-error: true
+        uses: classroom-resources/autograding-command-grader@v1
+        with:
+          test-name: Q10
+          command: >
+            Rscript -e "source('HW1.R');
+            if (!exists('f') || f(5)!=25) quit(status=1)"
+          max-score: 1
+
+      - name: Autograding Reporter
+        continue-on-error: true
+        uses: classroom-resources/autograding-grading-reporter@v1
+        env:
+          Q1_RESULTS: "${{ steps.q1.outputs.result }}"
+          Q2_RESULTS: "${{ steps.q2.outputs.result }}"
+          Q3_RESULTS: "${{ steps.q3.outputs.result }}"
+          Q4_RESULTS: "${{ steps.q4.outputs.result }}"
+          Q5_RESULTS: "${{ steps.q5.outputs.result }}"
+          Q6_RESULTS: "${{ steps.q6.outputs.result }}"
+          Q7_RESULTS: "${{ steps.q7.outputs.result }}"
+          Q8_RESULTS: "${{ steps.q8.outputs.result }}"
+          Q9_RESULTS: "${{ steps.q9.outputs.result }}"
+          Q10_RESULTS: "${{ steps.q10.outputs.result }}"
+        with:
+          runners: q1,q2,q3,q4,q5,q6,q7,q8,q9,q10
